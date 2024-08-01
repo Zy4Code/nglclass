@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/3f35247557.js" crossorigin="anonymous"></script>
+  <script>
+    async function sendMessage() {
+      const name = document.getElementById('name').value;
+      const message = document.getElementById('message').value;
+      const errorMessage = document.getElementById('error-message');
+
+      if (!name || !message) {
+        errorMessage.textContent = 'Nama dan pesan harus diisi.';
+        errorMessage.style.display = 'block';
+        errorMessage.classList.add('animate-bounce', 'bg-red-100', 'border', 'border-red-400', 'text-red-700', 'px-4', 'py-3', 'rounded', 'relative');
+        return;
+      }
+
+      const response = await fetch('src/backend/index.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username: name, message: message })
+      });
+
+      const result = await response.json();
+      if (result.status === 'error') {
+        errorMessage.textContent = result.message;
+        errorMessage.style.display = 'block';
+        errorMessage.classList.add('animate-bounce', 'bg-red-100', 'border', 'border-red-400', 'text-red-700', 'px-4', 'py-3', 'rounded', 'relative');
+      } else {
+        alert(result.message);
+        errorMessage.style.display = 'none';
+        errorMessage.classList.remove('animate-bounce', 'bg-red-100', 'border', 'border-red-400', 'text-red-700', 'px-4', 'py-3', 'rounded', 'relative');
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#123456] flex justify-center items-center h-screen m-0">
+  <div class="bg-white rounded-lg shadow-2xl text-center w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg transform transition duration-500">
+    <div class="flex flex-col items-center p-4 md:p-8 lg:p-12" style="background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://pbs.twimg.com/media/DAMDkjOVwAADZnk.jpg'); background-size: cover; background-position: center; border-radius: 0.5rem 0.5rem 0 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: 0.9;">
+      <img src="https://gethired.id/blog/wp-content/uploads/2022/09/tips-belajar-coding-pemula.jpg" alt="Placeholder Image" class="w-24 h-24 rounded-full bg-white mb-4 border-2 border-white">
+      <div class="text-center">
+        <div class="text-lg font-bold text-white">Nama Pengguna</div>
+        <div class="text-sm text-white">Deskripsi singkat tentang pengguna</div>
+      </div>
+    </div>
+    <div class="p-4 md:p-8 lg:p-12">
+      <div class="text-lg sm:text-xl md:text-2xl lg:text-3xl mb-4 font-bold text-gray-800">Ask me anything</div>
+      <input type="text" id="name" class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#37B7C3]" placeholder="Nama Anda" required>
+      <input type="text" id="message" class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#37B7C3]" placeholder="Type your question here..." required>
+      <button onclick="sendMessage()" class="bg-[#123456] text-white py-3 px-6 rounded-lg hover:bg-[#088395] transition duration-300 w-full sm:w-auto">Kirim Pesan</button>
+      <div id="error-message" class="text-red-500 mt-10" style="display: none;"></div>
+    </div>
+    <footer class="bg-[#123456] text-white py-4 mt-2 rounded-b-lg">
+      <div class="container mx-auto text-center px-4 sm:px-6 lg:px-8">
+        <p class="text-sm">© 2023 Nama Pengguna. All rights reserved.</p>
+        <div class="flex flex-col sm:flex-row justify-center mt-4">
+          <a href="#" class="mx-2 text-white hover:text-[#37B7C3] transition duration-300 text-2xl"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
