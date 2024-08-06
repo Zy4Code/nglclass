@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 
 $WEBHOOK_URL = 'https://discord.com/api/webhooks/1249680253094334484/qpw0h0LpKJugKgzZRbMeTF0j2i3LbXeie9hg1xPgB5DEk9YYFYmyij2z2NgR80y5aNtD';
-$COOLDOWN_PERIOD = 2 * 60 * 60; // 2 jam dalam detik
+$COOLDOWN_PERIOD = 30 * 60; // 30 menit dalam detik
 $last_sent_file = 'last_sent_times.json';
 
 function get_client_ip() {
@@ -36,7 +36,12 @@ function send_message($ip_address, $username, $message) {
     $last_sent_times = load_last_sent_times();
     $current_time = time();
     if (isset($last_sent_times[$ip_address]) && ($current_time - $last_sent_times[$ip_address] < $COOLDOWN_PERIOD)) {
-        return ['status' => 'error', 'message' => 'Tunggu 2 jam sebelum mengirim pesan lagi.'];
+        $remaining_time = $COOLDOWN_PERIOD - ($current_time - $last_sent_times[$ip_address]);
+        $hours = floor($remaining_time / 3600);
+        $minutes = floor(($remaining_time % 3600) / 60);
+        $seconds = $remaining_time % 60;
+        $formatted_time = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+        return ['status' => 'error', 'message' => 'Tunggu ' . $formatted_time . ' sebelum mengirim pesan lagi.'];
     }
 
     $embed = [
